@@ -7,10 +7,14 @@
 CPP=mpicxx
 # C++ options
 CPPFLAGS= --std=c++11 -g
-# Link options
-LDFLAGS=-pthread -static
+# Pthread support
+PTHREAD=-pthread
+# Static linking
+#STATIC=-static
+# Linker's flag
+LDFLAGS= $(PTHREAD) $(STATIC)
 # BNB-Solver folder
-BNBROOT=../BNB-solver
+BNBROOT=../BNB-Solver
 
 # Do not edit below this line
 INCPATH=-I$(BNBROOT)
@@ -20,7 +24,7 @@ LINKFLAGS=$(LDFLAGS) $(LIBS)
 
 	
 bnbdg.exe : bnbdg.o
-	$(CPP) -o bnbdg.exe bnbdg.o $(LINKFLAGS) 
+	$(CPP) $(CPPFLAGS) -o bnbdg.exe bnbdg.o $(LINKFLAGS) 
 
 -include deps.inc
 

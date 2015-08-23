@@ -13,7 +13,6 @@ The data format for NLP problems only follows general JSON notation
 # Problem definition 
   "problem" : {
                "objective" : objective,
-               "n" : number_of_variables, 
                "box" : {"a" : [...], "b": [...]}
               },
  
@@ -29,7 +28,6 @@ Example:
 {
   "problem" : { 
               "objective" : "x^2 - y^2", 
-              "n" : 2, 
               "box": {"a" : [-3, -3], "b" : [-3 : 3]}},
   "record" : {"v":0.0, "x":[0, 0]},
   "subproblems" : [{"a":[-3, -3], "b":[0, 0]}, {"a":[-3, 0], "b":[0, 3]}, {"a":[0, 0], "b":[3, 3]}, {"a":[0, -3], "b":[3, 0]}]
@@ -50,3 +48,19 @@ The program can be run as follows for example:
 
 where the initial state should be loaded from /tmp/st3.json file and stored in /tmp/st4.json file 
 after 100 iterations. 
+
+Script makeinp.pl merges problem and state definition files and obtains new input file.
+For example the following line
+
+./makeinp.pl ./probdef1.json /tmp/st1.json > /tmp/pd1.json
+
+generates new input file from ./probdef1.json problem definition and /tmp/st1.json state definition files.
+
+To build the project run 
+
+   make dep
+   make
+
+to clean the distribution run
+   
+   make clean

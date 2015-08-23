@@ -61,9 +61,7 @@ private:
  */
 int main(int argc, char** argv) {
     // Dimension
-    int n = 2;
-    // Box size
-    int d = 3;
+    int n;
     // Accuracy 
     double eps = .001;
     // Cut analysis depth
@@ -72,24 +70,25 @@ int main(int argc, char** argv) {
     int boxedcut = true;
 
 
-    if (argc != 7)
-        BNB_ERROR_REPORT("Usage bnbdg.exe dimension box_size polynom nsteps inputf outputf");
-    n = atoi(argv[1]);
-    d = atoi(argv[2]);
-    long long int iters = atoi(argv[4]);
+    if (argc != 4)
+        BNB_ERROR_REPORT("Usage bnbdg.exe nsteps inputf outputf");
+    long long int iters = atoi(argv[1]);
 
-    double x[n];
-    double rec = 0;
-    UnconsRecStore<double> ors(std::numeric_limits<double>::max(), n);
 
     /* Reading problem description and state */
     NlpProblem<double> nlp;
     WFSDFSManager manager;
     manager.setOptions(WFSDFSManager::Options::DFS);
-    BNCState<double> state(&manager, &ors);
     std::string str;
-    ParseInp::getStringFromFile(argv[5], str);
-    ParseInp::parse(str, nlp, state);
+    ParseInp::getStringFromFile(argv[2], str);
+    ParseInp::parseNLP(str, nlp);
+    n = nlp.mBox.mDim;
+    std::cout << "n = " << n << "\n";
+    double x[n];
+    UnconsRecStore<double> ors(std::numeric_limits<double>::max(), n);
+    BNCState<double> state(&manager, &ors);
+    ParseInp::parseState(str, nlp, state);
+
 
     /* Setup cut generators */
     /* Cut generator for objective*/
@@ -142,7 +141,7 @@ int main(int argc, char** argv) {
 
     /* Saving state */
     std::ofstream ofs;
-    ofs.open(argv[6]);
+    ofs.open(argv[3]);
     if (ofs.is_open())
         SaveBNCState::saveState(n, state, ofs);
     else

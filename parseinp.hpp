@@ -48,33 +48,43 @@ public:
     }
 
     /**
-     * Parse solver state from a string
-     * @param input text state description
+     * Parse problem definition from a string
+     * @param input text state and problem description
      * @param prob NLP problem definition
-     * @param state solver state
      */
-    static void parse(const std::string& input, NlpProblem<double>& prob, BNCState<double>& state) {
+    static void parseNLP(const std::string& input, NlpProblem<double>& prob) {
         JSONNode nd = libjson::parse(input);
         bool problemset = false;
-        bool stateset = false;
         for (auto i = nd.begin(); i != nd.end(); i++) {
             if (i->name() == PROBLEM_NAME) {
                 processProblem(*i, prob);
                 problemset = true;
-            } else if (i->name() == STATE_NAME) {
-                BNB_ASSERT(problemset);
-                processState(*i, state, prob);
-                stateset = true;
-            } else {
-                BNB_ERROR_REPORT("Illegal name on parsing input file");
+                break;
             }
         }
         BNB_ASSERT(problemset);
+    }
+
+    /**
+     * Parse solver state from a string
+     * @param input text state and problem description
+     * @param n number of parameters
+     * @param state solver state
+     */
+    static void parseState(const std::string& input, const NlpProblem<double>& prob, BNCState<double>& state) {
+        JSONNode nd = libjson::parse(input);
+        bool stateset = false;
+        for (auto i = nd.begin(); i != nd.end(); i++) {
+            if (i->name() == STATE_NAME) {
+                processState(*i, state, prob);
+                stateset = true;
+                break;
+            } 
+        }
         if (!stateset) {
             makeDefaultSubs(nd, state, prob);
         }
     }
-
 private:
 
     static void processProblem(const JSONNode & nd, NlpProblem<double>& prob) {

@@ -2,9 +2,9 @@
 #include <limits>
 #include <fstream>
 
-#include <problems/poly/polynom.hpp>
-#include <problems/poly/polynomtxt.hpp>
-#include <problems/poly/polyutil.hpp>
+#include <util/poly/polynom.hpp>
+#include <util/poly/polynomtxt.hpp>
+#include <util/poly/polyutil.hpp>
 #include <problems/optlib/polyobjective.hpp>
 #include <problems/nlp/cuts/nlprecstore.hpp>
 #include <problems/nlp/cuts/unconsrecstore.hpp>
@@ -59,35 +59,33 @@ private:
 /*
  * 
  */
-int main(int argc, char** argv) {
+int main(int argc, char** argv) {    
     // Dimension
     int n;
-    // Accuracy 
-    double eps = .001;
     // Cut analysis depth
     int ldepth = 1;
     // Use or not boxed cut or boxed cut together with normal cut
     int boxedcut = true;
 
-
-    if (argc != 4)
-        BNB_ERROR_REPORT("Usage bnbdg.exe nsteps inputf outputf");
-    long long int iters = atoi(argv[1]);
-
-
+    if (argc != 3)
+        BNB_ERROR_REPORT("Usage bnbdg.exe inputf outputf");
+    
+ 
     /* Reading problem description and state */
     NlpProblem<double> nlp;
     WFSDFSManager manager;
     manager.setOptions(WFSDFSManager::Options::DFS);
     std::string str;
-    ParseInp::getStringFromFile(argv[2], str);
-    ParseInp::parseNLP(str, nlp);
+    bnbdg::ParseInp::getStringFromFile(argv[1], str);
+    bnbdg::SolverData sd; 
+    bnbdg::ParseInp::parseSolverData(str, sd);
+    bnbdg::ParseInp::parseNLP(str, nlp);
     n = nlp.mBox.mDim;
     std::cout << "n = " << n << "\n";
     double x[n];
     UnconsRecStore<double> ors(std::numeric_limits<double>::max(), n);
     BNCState<double> state(&manager, &ors);
-    ParseInp::parseState(str, nlp, state);
+    bnbdg::ParseInp::parseState(str, nlp, state);
 
 
     /* Setup cut generators */
@@ -96,11 +94,11 @@ int main(int argc, char** argv) {
     PolyEigenSupp objEigenSupp(obj);
 
     /* Setup eigen based cut factory*/
-    EigenCutFactory<double> objEigenCutFact(&ors, &objEigenSupp, obj, eps);
+    EigenCutFactory<double> objEigenCutFact(&ors, &objEigenSupp, obj, sd.mEps);
 
     /* Setup specialized unconstrained cut factory*/
-    UnconsCutFactory<double> unconsCutFact(&ors, &objEigenSupp, obj, &(nlp.mBox), eps);
-    //UnconsCutFactory<double> unconsCutFact(&ors, &objEigenSupp, obj, NULL, eps);
+    UnconsCutFactory<double> unconsCutFact(&ors, &objEigenSupp, obj, &(nlp.mBox), sd.mEps);
+    //UnconsCutFactory<double> unconsCutFact(&ors, &objEigenSupp, obj, NULL, sd.mEps);
 
     /** Setup Convexity cut factory */
     GradLocSearch gls(nlp.mBox, obj);
@@ -132,6 +130,7 @@ int main(int argc, char** argv) {
     /* Solving problem */
     bool ru;
 
+    long long iters = sd.mNSteps;
     bnc.solve(iters, state, ru);
 
     /* Printing results*/
@@ -141,7 +140,7 @@ int main(int argc, char** argv) {
 
     /* Saving state */
     std::ofstream ofs;
-    ofs.open(argv[3]);
+    ofs.open(argv[2]);
     if (ofs.is_open())
         SaveBNCState::saveState(n, state, ofs);
     else

@@ -10,6 +10,13 @@ non-solved sub-problems.
 The data format for NLP problems only follows general JSON notation
 
 {
+# Solver's options
+  "solver" : {
+# number of steps to perform ("inf" for infinite number)
+     "nsteps" : number_of_steps,
+# precision
+     "eps" : eps
+   },
 # Problem definition 
   "problem" : {
                "objective" : objective,
@@ -26,11 +33,36 @@ The data format for NLP problems only follows general JSON notation
 Example:
 
 {
-  "problem" : { 
-              "objective" : "x^2 - y^2", 
-              "box": {"a" : [-3, -3], "b" : [-3 : 3]}},
-  "record" : {"v":0.0, "x":[0, 0]},
-  "subproblems" : [{"a":[-3, -3], "b":[0, 0]}, {"a":[-3, 0], "b":[0, 3]}, {"a":[0, 0], "b":[3, 3]}, {"a":[0, -3], "b":[3, 0]}]
+    "solver": {
+        "nsteps": 100,
+        "eps": 0.001
+    },
+    "problem": {
+        "objective": "x^2 - y^2",
+        "box": {
+            "a": [-3, -3],
+            "b": [3, 3]
+        }
+    },
+    "state": {
+        "record": {
+            "v": 0.0,
+            "x": [0, 0]
+        },
+        "subproblems": [{
+                "a": [-3, -3],
+                "b": [0, 0]
+            }, {
+                "a": [-3, 0],
+                "b": [0, 3]
+            }, {
+                "a": [0, 0],
+                "b": [3, 3]
+            }, {
+                "a": [0, -3],
+                "b": [3, 0]
+            }]
+    }
 }
 
 Notes: 
@@ -41,13 +73,13 @@ Notes:
    value for record is the maximal allowed number. Default value for subproblems is the list 
    consisting of the source problem.
 5. Functional constraints are to be added in future.
+6. Missing state means that the state is generated as an initial problem (top tree node).
 
 The program can be run as follows for example:
 
-./bnbdg.exe 100 /tmp/st3.json /tmp/st4.json
+./bnbdg.exe /tmp/st3.json /tmp/st4.json
 
-where the initial state should be loaded from /tmp/st3.json file and stored in /tmp/st4.json file 
-after 100 iterations. 
+where the initial state should be loaded from /tmp/st3.json file and stored in /tmp/st4.json file. 
 
 Script makeinp.pl merges problem and state definition files and obtains new input file.
 For example the following line

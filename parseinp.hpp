@@ -32,25 +32,7 @@ namespace bnbdg {
     class ParseInp {
     public:
 
-        /**
-         * Reading a string from a file
-         * @param fname file name 
-         * @param json resulting string
-         */
-        static void getStringFromFile(const char* fname, std::string& json) {
-            std::ifstream is(fname);
-            if (is.is_open()) {
-                while (!is.eof()) {
-                    std::string tmp;
-                    is >> tmp;
-                    json += tmp;
-                }
-                is.close();
-            } else {
-                BNB_ERROR_REPORT("Unable to open the input data file\n");
-            }
-        }
-
+ 
         static void parseSolverData(const std::string& input, SolverData& data) {
             JSONNode nd = libjson::parse(input);
             bool solverset = false;
@@ -174,7 +156,6 @@ namespace bnbdg {
             PolyUtil::fromString(objs.c_str(), idents, *poly);
             PolynomTxt fmt;
             std::string ss = PolyUtil::toString(fmt, *poly);
-            std::cout << "Polynom: " << ss << "\n";
             PolyObjective<double>* pobj = new PolyObjective<double>(poly);
             prob.mObj = pobj;
         }

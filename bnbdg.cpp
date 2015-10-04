@@ -5,6 +5,7 @@
 #include <util/poly/polynom.hpp>
 #include <util/poly/polynomtxt.hpp>
 #include <util/poly/polyutil.hpp>
+#include <util/common/fileutils.hpp>
 #include <problems/optlib/polyobjective.hpp>
 #include <problems/nlp/cuts/nlprecstore.hpp>
 #include <problems/nlp/cuts/unconsrecstore.hpp>
@@ -76,7 +77,7 @@ int main(int argc, char** argv) {
     WFSDFSManager manager;
     manager.setOptions(WFSDFSManager::Options::DFS);
     std::string str;
-    bnbdg::ParseInp::getStringFromFile(argv[1], str);
+    FileUtils::getStringFromFile(argv[1], str);
     bnbdg::SolverData sd; 
     bnbdg::ParseInp::parseSolverData(str, sd);
     bnbdg::ParseInp::parseNLP(str, nlp);

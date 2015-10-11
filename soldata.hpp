@@ -16,10 +16,13 @@ namespace bnbdg {
      */
     struct SolverData {
         /**
+         * Tree traversing strategy
+         */
+        int mTreeTraverseStrategy;
+        /**
          * Number of steps to perform
          */
-        long long int mNSteps;
-        
+        long long int mNSteps;        
         /**
          * Precision
          */

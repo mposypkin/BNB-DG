@@ -14,6 +14,15 @@ namespace bnbdg {
     // Json name for a node storing solver definition 
 #define SOLVER_NAME "solver"
 
+    // Json name for tree traversing strategy
+#define TREE_TRAVERSE_NAME "treetraverse"
+    
+    // Json name for width-first strategy 
+#define WFS_NAME "wfs"
+    
+    // Json name for depth-first strategy 
+#define DFS_NAME "dfs"
+    
     // Number of steps to perform by the solver
 #define NSTEPS_NAME "nsteps"
 

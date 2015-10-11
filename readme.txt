@@ -12,6 +12,8 @@ The data format for NLP problems only follows general JSON notation
 {
 # Solver's options
   "solver" : {
+# tree traversing strategy (width first search or depth first search)
+     "treetraverse" : "wfs" | "dfs"
 # number of steps to perform ("inf" for infinite number)
      "nsteps" : number_of_steps,
 # precision
@@ -34,6 +36,7 @@ Example:
 
 {
     "solver": {
+        "treetraverse" : "wfs",
         "nsteps": 100,
         "eps": 0.001
     },

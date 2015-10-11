@@ -22,6 +22,7 @@
 #include <util/poly/polynomtxt.hpp>
 #include <util/poly/polyutil.hpp>
 #include <problems/optlib/polyobjective.hpp>
+#include <util/tree/wfsdfsmanager.hpp>
 
 
 #include "bnbdgformat.hpp"
@@ -89,10 +90,20 @@ namespace bnbdg {
     private:
 
         static void processSolver(const JSONNode & nd, SolverData& data) {
+            bool treetravset = false;
             bool nstepsset = false;
             bool epsset = false;
             for (auto i = nd.begin(); i != nd.end(); i++) {
-                if (i->name() == NSTEPS_NAME) {
+                if(i->name() == TREE_TRAVERSE_NAME) {
+                    std::string s = i->as_string();
+                    if(s == WFS_NAME)
+                        data.mTreeTraverseStrategy = WFSDFSManager::Options::WFS;
+                    else if(s == DFS_NAME)
+                        data.mTreeTraverseStrategy = WFSDFSManager::Options::DFS;
+                    else 
+                        BNB_ERROR_REPORT("Unknown tree traversing strategy\n");
+                    treetravset = true;
+                } else if (i->name() == NSTEPS_NAME) {
                     long long int ns = i->as_int();
                     if(ns == -1) 
                         data.mNSteps = std::numeric_limits<long long int>::max();
@@ -106,7 +117,7 @@ namespace bnbdg {
                     BNB_ERROR_REPORT("Illegal name on parsing input file");
                 }
             }
-            BNB_ASSERT(nstepsset && epsset);
+            BNB_ASSERT(treetravset && nstepsset && epsset);
         }
 
         static void processProblem(const JSONNode & nd, NlpProblem<double>& prob) {

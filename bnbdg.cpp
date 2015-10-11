@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
     // Cut analysis depth
     int ldepth = 1;
     // Use or not boxed cut or boxed cut together with normal cut
-    int boxedcut = true;
+    int boxedcut = 1;
 
     if (argc != 3)
         BNB_ERROR_REPORT("Usage bnbdg.exe inputf outputf");
@@ -74,13 +74,13 @@ int main(int argc, char** argv) {
  
     /* Reading problem description and state */
     NlpProblem<double> nlp;
-    WFSDFSManager manager;
-    manager.setOptions(WFSDFSManager::Options::DFS);
+    WFSDFSManager manager;    
     std::string str;
     FileUtils::getStringFromFile(argv[1], str);
     bnbdg::SolverData sd; 
     bnbdg::ParseInp::parseSolverData(str, sd);
     bnbdg::ParseInp::parseNLP(str, nlp);
+    manager.setOptions(sd.mTreeTraverseStrategy);
     n = nlp.mBox.mDim;
     std::cout << "n = " << n << "\n";
     double x[n];

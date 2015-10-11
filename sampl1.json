@@ -1,5 +1,6 @@
 {
     "solver": {
+        "treetraverse": "dfs",
         "nsteps": 100,
         "eps": 0.001
     },

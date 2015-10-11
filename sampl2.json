@@ -1,7 +1,8 @@
 {
-    "solver" : {
-      "nsteps" : 100,
-      "eps" : 0.001
+    "solver": {
+        "treetraverse": "dfs",
+        "nsteps": 100,
+        "eps": 0.001
     },
     "problem": {
         "objective": "x^2 - y^2",
@@ -10,4 +11,4 @@
             "b": [3, 3]
         }
     }
- }
+}
